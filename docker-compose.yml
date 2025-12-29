@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # This is our Database Service
+  postgres-db:
+    image: postgres:15-alpine  # Use a lightweight version of Postgres
+    container_name: uniqueue_db_container
+    ports:
+      - "5432:5432"  # Open port 5432 so our local Java app can talk to it
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: uniqueue_db
+    volumes:
+      - db_data:/var/lib/postgresql/data  # Save data here so it survives restarts
+
+# This creates a "Volume" (a managed hard drive) for the DB data
+volumes:
+  db_data:

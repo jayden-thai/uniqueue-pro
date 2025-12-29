@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: uniqueue-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/uniqueue_db
+    username: admin
+    password: password123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update # Automatically creates tables for us!
+    show-sql: true # Shows us the SQL commands in the terminal (great for debugging)
+    properties:
+      hibernate:
+        format_sql: true   
