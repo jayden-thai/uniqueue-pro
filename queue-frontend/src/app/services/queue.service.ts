@@ -1,25 +1,27 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface QueueItem {
+  id?: number;
   name: string;
-  joinedAt: Date;
+  universityId: string;
+  email?: string;
+  major?: string;
+  arrivalTime?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class QueueService {
-  // Global State: List of People
-  private queue: QueueItem[] = [
-    { name: 'Initial User', joinedAt: new Date()}
-  ];
-
-  // Global State: Current User's Name
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:8080/api/students';
   private currentUserName: string = '';
 
   // Getters
-  getQueue() {
-    return this.queue;
+  getQueue(): Observable<QueueItem[]>{
+    return this.http.get<QueueItem[]>(this.apiUrl);
   }
 
   getCurrentUser() {
@@ -34,10 +36,20 @@ export class QueueService {
   joinQueue() {
     if (!this.currentUserName) return; // Don't add if not logged in
 
-    const newItem: QueueItem = {
+    const newPerson: QueueItem = {
       name: this.currentUserName,
-      joinedAt: new Date()
+      universityId: this.generateRandomId(),
+      email: `${this.currentUserName}@university.edu`,
+      major: 'Undeclared'
     };
-    this.queue.push(newItem);
+    
+    this.http.post<QueueItem>(this.apiUrl, newPerson).subscribe(() => {
+      console.log('Sent to backend!');
+    });
+  }
+
+  // ID generation
+  private generateRandomId(): string {
+    return Math.random().toString(36).substring(7);
   }
 }
