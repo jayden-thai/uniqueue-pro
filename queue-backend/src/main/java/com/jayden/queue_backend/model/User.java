@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "students")
+@Table(name = "app_users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
+public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +22,19 @@ public class Student {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column(nullable = false, unique = true) 
     private String universityId;
 
+    private String role;
+
     private String email;
 
-    private String major;
+    private String department;
+
+
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime arrivalTime = LocalDateTime.now();

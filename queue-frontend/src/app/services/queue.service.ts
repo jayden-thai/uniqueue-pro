@@ -8,7 +8,9 @@ export interface QueueItem {
   name: string;
   universityId: string;
   email?: string;
-  major?: string;
+  department?: string;
+  role: 'STUDENT' | 'FACULTY';
+  password?: string;
   arrivalTime?: string;
 }
 
@@ -35,13 +37,15 @@ export class QueueService {
   }
 
   joinQueue() {
-    if (!this.currentUserName) return; // Don't add if not logged in
+    if (!this.currentUserName) return; // Don't add if not logged in (redundant with current authentication guard implementation)
 
     const newPerson: QueueItem = {
       name: this.currentUserName,
       universityId: this.generateRandomId(),
       email: `${this.currentUserName}@university.edu`,
-      major: 'Undeclared'
+      password: 'defaultPassword123',
+      role: 'STUDENT',
+      department: 'Undeclared'
     };
     
     this.http.post<QueueItem>(this.apiUrl, newPerson).subscribe(() => {
