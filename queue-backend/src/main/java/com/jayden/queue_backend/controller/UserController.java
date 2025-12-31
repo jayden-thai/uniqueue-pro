@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -15,28 +18,34 @@ import java.util.List;
 })
 public class UserController {
     
-    private final UserService studentService;
+    private final UserService userService;
 
     public UserController(UserService studentService) {
-        this.studentService = studentService;
+        this.userService = studentService;
     }
 
-    // Use port 8080 (http://localhost:8080/api/students) for local testing
+    // Use port 8080 (http://localhost:8080/api/students) for localhost testing
 
     @GetMapping
     public List<User> getAllStudents() {
-        return studentService.getAllStudents();
+        return userService.getAllStudents();
     }
 
     @PostMapping
     public User joinQueue(@RequestBody User student) {
         // @RequestBody will take in JSON from Angular and create the Java object
-        return studentService.addStudent(student);
+        return userService.addStudent(student);
     }
 
     @DeleteMapping("/{id}")
     public void leaveQueue (@PathVariable Long id) {
-        studentService.removeStudent(id);
+        userService.removeStudent(id);
     }
+
+    @PostMapping("/login")
+    public User login(@RequestBody User loginRequest) {
+        return userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+    }
+    
 
 }
