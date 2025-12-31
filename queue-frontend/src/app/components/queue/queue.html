@@ -23,7 +23,7 @@
                         </span>
 
                         <span matListItemLine>
-                            Joined: {{ item.arrivalTime | date:'shortTime' }}
+                            Joined: {{ item.arrivalTime + 'Z' | date:'shortTime' }}
                         </span>
                     </mat-list-item>
 
