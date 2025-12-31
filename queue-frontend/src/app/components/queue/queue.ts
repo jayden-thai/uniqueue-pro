@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule, DatePipe } from '@angular/common';
 import { QueueService, QueueItem } from '../../services/queue.service';
-import { Observable } from 'rxjs';
+import { Observable, timer, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-queue',
@@ -27,16 +27,13 @@ export class Queue implements OnInit {
   constructor(public queueService: QueueService) {}
 
   ngOnInit() {
-    this.queueList$ = this.queueService.getQueue();
+    this.queueList$ = timer(0, 2000).pipe(
+      switchMap(() => this.queueService.getQueue())
+    );
   }
 
   joinQueue() {
     this.queueService.joinQueue();
-
-    // Refreshes list after short delay
-    setTimeout(() => {
-      this.queueList$ = this.queueService.getQueue();
-    }, 200);
   }
 
 }

@@ -16,6 +16,8 @@ public class StudentService {
 
     // Joining the queue
     public Student addStudent(Student student) {
+        if (student.getArrivalTime() == null) 
+            student.setArrivalTime(java.time.LocalDateTime.now());
         return studentRepository.save(student);
     }
 
