@@ -1,15 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms'; 
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms'; 
-import { Router } from '@angular/router';
-import { QueueService } from '../../services/queue.service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [
+    CommonModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -20,25 +24,25 @@ import { QueueService } from '../../services/queue.service';
   styleUrl: './login.scss',
 })
 export class Login {
-  // Definite properties to store user input
-  username = '';
-  password = '';
+  authService = inject(AuthService);
+  router = inject(Router);
 
-  // Inject Router for navigation
-  constructor(
-    private router: Router,
-    private queueService: QueueService
-  ) {}
+  email = '';
+  password = '';
+  errorMessage = '';
 
   // Runs when user clicks "Login"
   onLogin() {
-    if (this.username) {
-      console.log('Logging in as:', this.username);
-
-      this.queueService.login(this.username);
-
-      this.router.navigate(['/queue']);
-    }
+    this.authService.login(this.email, this.password).subscribe({
+      next: (user) => {
+        console.log("Logged in as: ", user);
+        this.router.navigate(['/queue']);
+      },
+      error: (err) => {
+        this.errorMessage = "Invalid credentials";
+        console.error(err);
+      }
+    });
 
     
   }

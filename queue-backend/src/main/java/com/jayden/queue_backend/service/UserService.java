@@ -8,37 +8,37 @@ import java.util.List;
 @Service
 public class UserService {
     
-    private final UserRepository studentRepository;
+    private final UserRepository userRepository;
 
-    public UserService(UserRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     // Joining the queue
     public User addStudent(User student) {
         if (student.getArrivalTime() == null) 
             student.setArrivalTime(java.time.LocalDateTime.now());
-        return studentRepository.save(student);
+        return userRepository.save(student);
     }
 
     // Seeing the queue
-    public List<User> getAllStudents() {
-        return studentRepository.findAll();
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     // Removing from queue
     public void removeStudent(Long id) {
-        studentRepository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
     public User getStudent(Long id) {
-        return studentRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElse(null);
     }
 
     // Registering a new account
     public User registerStudent(User student) {
         // Check if email is already taken
-        if (studentRepository.findByEmail(student.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(student.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists!");
         }
 
@@ -46,13 +46,13 @@ public class UserService {
             student.setRole("STUDENT");
         }
 
-        return studentRepository.save(student);
+        return userRepository.save(student);
     }
 
     // Logging in by checking credentials
     public User login(String email, String password) {
         // Find user
-        User student = studentRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User student = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         // Check password
         if (!student.getPassword().equals(password)) {
