@@ -1,11 +1,10 @@
 package com.jayden.queue_backend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 
 @Entity
@@ -30,12 +29,18 @@ public class User {
 
     private String role;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
     private String department;
 
+    @Column(nullable = false, updatable = false)
+    private Instant dateCreated;
 
-
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime arrivalTime = LocalDateTime.now();
+    @PrePersist
+    void onCreate() {
+        if (dateCreated == null) {
+            dateCreated = Instant.now();
+        }
+    }
 }

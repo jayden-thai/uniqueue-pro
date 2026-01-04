@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Login } from './components/login/login';
 import { Queue } from './components/queue/queue';
+import { Register } from './components/register/register';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -11,4 +12,5 @@ export const routes: Routes = [
         component: Queue,
         canActivate: [authGuard] 
     },
+    { path: 'register', component: Register}
 ];

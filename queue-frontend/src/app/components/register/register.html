@@ -1,1 +1,47 @@
-<p>register works!</p>
+<div class="login-container">
+    <mat-card class="login-card">
+        <mat-card-header>
+            <mat-card-title>Register Your Account</mat-card-title>
+        </mat-card-header>
+        <form (ngSubmit)="onRegister()">
+            <mat-card-content>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Name</mat-label>
+                    <input matInput [(ngModel)]="user.name" name="name" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Email</mat-label>
+                    <input matInput [(ngModel)]="user.email" name="email" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>University ID</mat-label>
+                    <input matInput [(ngModel)]="user.universityId" name="universityId" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Major/Department</mat-label>
+                    <input matInput [(ngModel)]="user.department" name="department" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" [(ngModel)]="user.password" name="password" required>
+                </mat-form-field>
+
+                <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+            </mat-card-content>
+
+            <mat-card-actions align="end">
+                
+                    <button mat-flat-button color="primary" type="submit">
+                        Register
+                    </button>
+                
+            </mat-card-actions>
+        </form>
+    </mat-card>
+</div>
+

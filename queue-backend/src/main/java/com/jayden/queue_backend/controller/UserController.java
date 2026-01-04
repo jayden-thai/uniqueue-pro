@@ -22,27 +22,21 @@ public class UserController {
     
     private final UserService userService;
 
-    public UserController(UserService studentService) {
-        this.userService = studentService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    // Use port 8080 (http://localhost:8080/api/students) for localhost testing
+    // Use port 8080 (http://localhost:8080/api/users) for localhost testing
 
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @PostMapping
-    public User joinQueue(@RequestBody User student) {
-        // @RequestBody will take in JSON from Angular and create the Java object
-        return userService.addStudent(student);
-    }
-
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
-            User newUser = userService.registerStudent(user);
+            User newUser = userService.registerUser(user);
             return ResponseEntity.ok(newUser);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -51,7 +45,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public void leaveQueue (@PathVariable Long id) {
-        userService.removeStudent(id);
+        userService.removeUser(id);
     }
 
     @PostMapping("/login")

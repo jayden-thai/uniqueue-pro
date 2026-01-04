@@ -4,6 +4,7 @@ import com.jayden.queue_backend.model.User;
 import com.jayden.queue_backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.time.Instant;
 
 @Service
 public class UserService {
@@ -14,51 +15,44 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Joining the queue
-    public User addStudent(User student) {
-        if (student.getArrivalTime() == null) 
-            student.setArrivalTime(java.time.LocalDateTime.now());
-        return userRepository.save(student);
-    }
-
-    // Seeing the queue
+    // Seeing the database
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Removing from queue
-    public void removeStudent(Long id) {
+    // Removing from database
+    public void removeUser(Long id) {
         userRepository.deleteById(id);
     }
 
-    public User getStudent(Long id) {
+    public User getUser(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
     // Registering a new account
-    public User registerStudent(User student) {
+    public User registerUser(User user) {
         // Check if email is already taken
-        if (userRepository.findByEmail(student.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists!");
         }
 
-        if (student.getRole() == null) {
-            student.setRole("STUDENT");
+        if (user.getRole() == null) {
+            user.setRole("USER");
         }
 
-        return userRepository.save(student);
+        return userRepository.save(user);
     }
 
     // Logging in by checking credentials
     public User login(String email, String password) {
         // Find user
-        User student = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         // Check password
-        if (!student.getPassword().equals(password)) {
+        if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Wrong password");
         }
 
-        return student;
+        return user;
     }
 }

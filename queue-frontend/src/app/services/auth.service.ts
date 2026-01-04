@@ -7,7 +7,7 @@ export interface User {
   id?: number;
   email: string;
   password?: string;
-  role: 'STUDENT' | 'FACULTY';
+  role: 'USER' | 'FACULTY';
   universityId: string;
   name: string;
   department?: string;
@@ -41,5 +41,13 @@ export class AuthService {
         this.currentUserSubject.next(savedUser);
       })
     );
+  }
+
+  getCurrentUser(): User | null {
+    return this.currentUserSubject.getValue();
+  }
+
+  isLoggedIn(): boolean {
+    return this.getCurrentUser() !== null;
   }
 }

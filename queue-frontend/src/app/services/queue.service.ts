@@ -9,7 +9,7 @@ export interface QueueItem {
   universityId: string;
   email?: string;
   department?: string;
-  role: 'STUDENT' | 'FACULTY';
+  role: 'USER' | 'FACULTY';
   password?: string;
   arrivalTime?: string;
 }
@@ -44,7 +44,7 @@ export class QueueService {
       universityId: this.generateRandomId(),
       email: `${this.currentUserName}@university.edu`,
       password: 'defaultPassword123',
-      role: 'STUDENT',
+      role: 'USER',
       department: 'Undeclared'
     };
     

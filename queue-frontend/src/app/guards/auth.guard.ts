@@ -1,15 +1,16 @@
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { QueueService } from "../services/queue.service";
+import { AuthService } from "../services/auth.service";
 
 export const authGuard = () => {
-    const queueService = inject(QueueService);
+    const authService = inject(AuthService);
     const router = inject(Router);
 
-    if (queueService.getCurrentUser()) {
+    if (authService.isLoggedIn()) {
         return true;
     } else {
         router.navigate(['/login']);
+        console.log("Not logged in!")
         return false;
     }
 }

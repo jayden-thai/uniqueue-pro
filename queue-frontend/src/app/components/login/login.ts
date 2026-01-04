@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,7 +19,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    FormsModule
+    FormsModule,
+    RouterModule
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
