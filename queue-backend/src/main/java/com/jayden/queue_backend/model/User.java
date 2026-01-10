@@ -27,7 +27,9 @@ public class User {
     @Column(nullable = false, unique = true) 
     private String universityId;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.STUDENT;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -39,6 +41,9 @@ public class User {
 
     @PrePersist
     void onCreate() {
+        if (role == null) {
+            role = Role.STUDENT;
+        }
         if (dateCreated == null) {
             dateCreated = Instant.now();
         }

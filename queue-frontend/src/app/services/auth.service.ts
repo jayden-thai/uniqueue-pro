@@ -7,7 +7,7 @@ export interface User {
   id?: number;
   email: string;
   password?: string;
-  role: 'USER' | 'FACULTY';
+  role: 'STUDENT' | 'FACULTY';
   universityId: string;
   name: string;
   department?: string;
@@ -24,7 +24,7 @@ export class AuthService {
   currentUser$ = this.currentUserSubject.asObservable();
 
   login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/login`, { email, password }).pipe(
+    return this.http.post<User>(`${this.apiUrl}/users/login`, { email, password }).pipe(
       tap(user => {
         this.currentUserSubject.next(user);
       })
@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   register(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, user).pipe(
+    return this.http.post<User>(`${this.apiUrl}/users/register`, user).pipe(
       tap(savedUser => {
         this.currentUserSubject.next(savedUser);
       })

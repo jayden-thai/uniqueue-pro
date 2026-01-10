@@ -34,7 +34,7 @@ export class Register {
     password: '',
     name: '',
     universityId: '',
-    role: 'USER',
+    role: 'STUDENT',
     department: '',
   }
 

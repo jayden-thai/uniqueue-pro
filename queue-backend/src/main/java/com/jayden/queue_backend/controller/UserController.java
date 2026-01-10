@@ -1,16 +1,18 @@
 package com.jayden.queue_backend.controller;
 
+import com.jayden.queue_backend.dto.UserResponseDto;
+import com.jayden.queue_backend.exception.DuplicateEmailException;
+import com.jayden.queue_backend.exception.DuplicateUniversityIdException;
 import com.jayden.queue_backend.model.User;
 import com.jayden.queue_backend.service.UserService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
-import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,15 +31,19 @@ public class UserController {
     // Use port 8080 (http://localhost:8080/api/users) for localhost testing
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponseDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
-            User newUser = userService.registerUser(user);
-            return ResponseEntity.ok(newUser);
+            UserResponseDto newUser = userService.registerUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        } catch (DuplicateEmailException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (DuplicateUniversityIdException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -49,8 +55,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody User loginRequest) {
-        return userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+    public ResponseEntity<?> login(@RequestBody User loginRequest) {
+        if (loginRequest.getEmail() == null || loginRequest.getUniversityId() == null) {
+            return ResponseEntity.badRequest().body("Email and password are required.");
+        }
+        
+        try {
+            return ResponseEntity.ok(
+                userService.login(loginRequest.getEmail(), loginRequest.getPassword())
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
     }
     
 

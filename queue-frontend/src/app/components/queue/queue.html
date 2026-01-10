@@ -12,18 +12,18 @@
 
         <mat-card-content>
             <mat-list>
-                @for (item of (queueList$ | async); track item.universityId) {
-                    <mat-list-item [class.is-me]="item.name === queueService.getCurrentUser()">
+                @for (item of (queueList$ | async); track item.id) {
+                    <mat-list-item [class.is-me]="item.user.id === authService.getCurrentUser()?.id">
 
                         <mat-icon matListItemIcon>person</mat-icon>
 
                         <span matListItemTitle>
-                            {{ item.name }}
-                            @if (item.name === queueService.getCurrentUser()) { (You) }
+                            {{ item.user.name }}
+                            @if (item.user.id === authService.getCurrentUser()?.id) { (You) }
                         </span>
 
                         <span matListItemLine>
-                            Joined: {{ item.dateCreated | date:'shortTime' }}
+                            Joined: {{ item.joinedAt | date:'shortTime' }}
                         </span>
                     </mat-list-item>
 

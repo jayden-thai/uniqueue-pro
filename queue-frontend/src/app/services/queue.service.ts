@@ -2,16 +2,21 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { AuthService } from './auth.service';
 
-export interface QueueItem {
-  id?: number;
-  name: string;
-  universityId: string;
-  email?: string;
-  department?: string;
-  role: 'USER' | 'FACULTY';
-  password?: string;
-  arrivalTime?: string;
+export interface QueueEntry {
+  id: number;
+  joinedAt: string;
+  active: boolean;
+  user: {
+    id: number;
+    name: string;
+    universityId: string;
+    email: string;
+    department?: string;
+    role: 'STUDENT' | 'FACULTY';
+  }
+  
 }
 
 @Injectable({
@@ -20,41 +25,23 @@ export interface QueueItem {
 export class QueueService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
-  private currentUserName: string = '';
+  private auth = inject(AuthService);
 
-  // Getters
-  getQueue(): Observable<QueueItem[]>{
-    return this.http.get<QueueItem[]>(this.apiUrl);
+  getQueue(): Observable<QueueEntry[]>{
+    return this.http.get<QueueEntry[]>(`${this.apiUrl}/queue`);
   }
 
-  getCurrentUser() {
-    return this.currentUserName;
-  }
-
-  // Setters
-  login(name: string) {
-    this.currentUserName = name;
-  }
-
-  joinQueue() {
-    if (!this.currentUserName) return; // Don't add if not logged in (redundant with current authentication guard implementation)
-
-    const newPerson: QueueItem = {
-      name: this.currentUserName,
-      universityId: this.generateRandomId(),
-      email: `${this.currentUserName}@university.edu`,
-      password: 'defaultPassword123',
-      role: 'USER',
-      department: 'Undeclared'
-    };
+  joinQueue(): Observable<QueueEntry> {
+    const user = this.auth.getCurrentUser();
+    if (!user?.id) throw new Error('No logged-in user (missing id)'); 
     
-    this.http.post<QueueItem>(this.apiUrl, newPerson).subscribe(() => {
-      console.log('Sent to backend!');
-    });
+    return this.http.post<QueueEntry>(`${this.apiUrl}/queue/join/${user.id}`, {});
   }
 
-  // ID generation
-  private generateRandomId(): string {
-    return Math.random().toString(36).substring(7);
+  leaveQueue(): Observable<void> {
+    const user = this.auth.getCurrentUser();
+    if (!user?.id) throw new Error('No logged-in user (missing id).');
+
+    return this.http.post<void>(`${this.apiUrl}/queue/leave/${user.id}`, {});
   }
 }

@@ -11,4 +11,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // "Optional" acts like a  "Safety Box" in case the user does not exist (prevents null pointer crashes)
     Optional<User> findByEmail(String Email);
+    Optional<User> findByUniversityId(String universityId);
 }

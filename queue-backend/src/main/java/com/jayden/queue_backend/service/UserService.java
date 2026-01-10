@@ -1,23 +1,33 @@
 package com.jayden.queue_backend.service;
 
+import com.jayden.queue_backend.dto.UserResponseDto;
+import com.jayden.queue_backend.exception.DuplicateEmailException;
+import com.jayden.queue_backend.exception.DuplicateUniversityIdException;
 import com.jayden.queue_backend.model.User;
 import com.jayden.queue_backend.repository.UserRepository;
+import com.jayden.queue_backend.mapper.UserMapper;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.time.Instant;
 
 @Service
 public class UserService {
     
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     // Seeing the database
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll()
+            .stream()
+            .map(userMapper::toDto)
+            .toList();
     }
 
     // Removing from database
@@ -25,26 +35,32 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User getUser(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public UserResponseDto getUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toDto(user);
     }
 
     // Registering a new account
-    public User registerUser(User user) {
-        // Check if email is already taken
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists!");
-        }
+    public UserResponseDto registerUser(User user) {
+        try {
+            return userMapper.toDto(userRepository.save(user));
+        } catch (DataIntegrityViolationException e) {
+            String msg = e.getMostSpecificCause().getMessage();
 
-        if (user.getRole() == null) {
-            user.setRole("USER");
-        }
+            if (msg != null && msg.contains("app_users_email_key")) {
+                throw new DuplicateEmailException("Email already exists!");
+            }
+            if (msg != null && msg.contains("app_users_university_id_key")) {
+                throw new DuplicateUniversityIdException("University ID already exists!");
+            }
 
-        return userRepository.save(user);
+            throw new RuntimeException("Registration failed due to invalid data.");
+        }
     }
 
     // Logging in by checking credentials
-    public User login(String email, String password) {
+    public UserResponseDto login(String email, String password) {
         // Find user
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -53,6 +69,7 @@ public class UserService {
             throw new RuntimeException("Wrong password");
         }
 
-        return user;
+        return userMapper.toDto(user);
     }
+
 }
