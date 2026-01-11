@@ -3,6 +3,9 @@ package com.jayden.queue_backend.service;
 import com.jayden.queue_backend.dto.UserResponseDto;
 import com.jayden.queue_backend.exception.DuplicateEmailException;
 import com.jayden.queue_backend.exception.DuplicateUniversityIdException;
+import com.jayden.queue_backend.exception.IncompleteFormSubmissionException;
+import com.jayden.queue_backend.exception.InvalidCredentialException;
+import com.jayden.queue_backend.exception.UserNotFoundException;
 import com.jayden.queue_backend.model.User;
 import com.jayden.queue_backend.repository.UserRepository;
 import com.jayden.queue_backend.mapper.UserMapper;
@@ -32,17 +35,27 @@ public class UserService {
 
     // Removing from database
     public void removeUser(Long id) {
+        userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         userRepository.deleteById(id);
     }
 
     public UserResponseDto getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         return userMapper.toDto(user);
     }
 
     // Registering a new account
     public UserResponseDto registerUser(User user) {
+
+        if (user.getEmail() == null || user.getEmail().isBlank()
+        || user.getPassword() == null || user.getPassword().isBlank()
+        || user.getUniversityId() == null || user.getUniversityId().isBlank()
+        || user.getName() == null || user.getName().isBlank()) {
+            throw new IncompleteFormSubmissionException("Missing required fields.");
+        }
+
         try {
             return userMapper.toDto(userRepository.save(user));
         } catch (DataIntegrityViolationException e) {
@@ -61,12 +74,16 @@ public class UserService {
 
     // Logging in by checking credentials
     public UserResponseDto login(String email, String password) {
+        if (email == null || password == null) {
+            throw new IncompleteFormSubmissionException("Email and password are required.");
+        }
+        
         // Find user
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new InvalidCredentialException("Invalid credentials"));
 
         // Check password
         if (!user.getPassword().equals(password)) {
-            throw new RuntimeException("Wrong password");
+            throw new InvalidCredentialException("Invalid credentials");
         }
 
         return userMapper.toDto(user);

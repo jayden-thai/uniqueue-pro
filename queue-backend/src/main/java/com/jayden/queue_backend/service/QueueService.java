@@ -1,6 +1,9 @@
 package com.jayden.queue_backend.service;
 
 import com.jayden.queue_backend.dto.QueueEntryResponseDto;
+import com.jayden.queue_backend.exception.DuplicateQueueEntryException;
+import com.jayden.queue_backend.exception.QueueEntryNotFoundException;
+import com.jayden.queue_backend.exception.UserNotFoundException;
 import com.jayden.queue_backend.mapper.QueueEntryMapper;
 import com.jayden.queue_backend.model.QueueEntry;
 import com.jayden.queue_backend.model.User;
@@ -32,11 +35,11 @@ public class QueueService {
 
     public QueueEntryResponseDto joinQueue(Long userId) {
         queueEntryRepository.findByUserIdAndActiveTrue(userId).ifPresent(e -> {
-            throw new RuntimeException("User is already in the queue");
+            throw new DuplicateQueueEntryException("User is already in the queue");
         });
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
             
         QueueEntry entry = new QueueEntry();
         entry.setUser(user);
@@ -47,7 +50,7 @@ public class QueueService {
 
     public void leaveQueue(Long userId) {
         QueueEntry entry = queueEntryRepository.findByUserIdAndActiveTrue(userId)
-                        .orElseThrow(() -> new RuntimeException("User is not in the queue."));
+                        .orElseThrow(() -> new QueueEntryNotFoundException("User is not in the queue."));
         
         entry.setActive(false);
         queueEntryRepository.save(entry);

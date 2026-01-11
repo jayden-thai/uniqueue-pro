@@ -37,36 +37,21 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        try {
-            UserResponseDto newUser = userService.registerUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-        } catch (DuplicateEmailException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (DuplicateUniversityIdException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        UserResponseDto newUser = userService.registerUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     @DeleteMapping("/{id}")
-    public void leaveQueue (@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser (@PathVariable Long id) {
         userService.removeUser(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
-        if (loginRequest.getEmail() == null || loginRequest.getPassword() == null) {
-            return ResponseEntity.badRequest().body("Email and password are required.");
-        }
-        
-        try {
-            return ResponseEntity.ok(
-                userService.login(loginRequest.getEmail(), loginRequest.getPassword())
-            );
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
+        return ResponseEntity.ok(
+            userService.login(loginRequest.getEmail(), loginRequest.getPassword())
+        );
     }
     
 
