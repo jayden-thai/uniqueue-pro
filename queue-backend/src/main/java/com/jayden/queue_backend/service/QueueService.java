@@ -1,5 +1,7 @@
 package com.jayden.queue_backend.service;
 
+import com.jayden.queue_backend.dto.QueueEntryResponseDto;
+import com.jayden.queue_backend.mapper.QueueEntryMapper;
 import com.jayden.queue_backend.model.QueueEntry;
 import com.jayden.queue_backend.model.User;
 import com.jayden.queue_backend.repository.QueueEntryRepository;
@@ -8,24 +10,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 @Service
 public class QueueService {
     
     private final QueueEntryRepository queueEntryRepository;
     private final UserRepository userRepository;
+    private final QueueEntryMapper queueEntryMapper;
 
-    public QueueService(QueueEntryRepository queueEntryRepository, UserRepository userRepository) {
+    public QueueService(QueueEntryRepository queueEntryRepository, UserRepository userRepository, QueueEntryMapper queueEntryMapper) {
         this.queueEntryRepository = queueEntryRepository;
         this.userRepository = userRepository;
+        this.queueEntryMapper = queueEntryMapper;
     }
 
-    public List<QueueEntry> getActiveQueue() {
-        return queueEntryRepository.findByActiveTrueOrderByJoinedAtAsc();
+    public List<QueueEntryResponseDto> getActiveQueue() {
+        return queueEntryRepository.findByActiveTrueOrderByJoinedAtAsc()
+            .stream()
+            .map(queueEntryMapper::toDto)
+            .toList();
     }
 
-    public QueueEntry joinQueue(Long userId) {
+    public QueueEntryResponseDto joinQueue(Long userId) {
         queueEntryRepository.findByUserIdAndActiveTrue(userId).ifPresent(e -> {
             throw new RuntimeException("User is already in the queue");
         });
@@ -37,7 +42,7 @@ public class QueueService {
         entry.setUser(user);
         entry.setActive(true);
 
-        return queueEntryRepository.save(entry);
+        return queueEntryMapper.toDto(queueEntryRepository.save(entry));
     }
 
     public void leaveQueue(Long userId) {

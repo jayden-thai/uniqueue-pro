@@ -1,14 +1,12 @@
 package com.jayden.queue_backend.controller;
 
-import com.jayden.queue_backend.model.QueueEntry;
+import com.jayden.queue_backend.dto.QueueEntryResponseDto;
 import com.jayden.queue_backend.service.QueueService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -27,12 +25,12 @@ public class QueueController {
     }
 
     @GetMapping
-    public List<QueueEntry> getQueue() {
+    public List<QueueEntryResponseDto> getQueue() {
         return queueService.getActiveQueue();
     }
 
     @PostMapping("/join/{userId}")
-    public QueueEntry join(@PathVariable Long userId) {
+    public QueueEntryResponseDto join(@PathVariable Long userId) {
         return queueService.joinQueue(userId);
     }
     
