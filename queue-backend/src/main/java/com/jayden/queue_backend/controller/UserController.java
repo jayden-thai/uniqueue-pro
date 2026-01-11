@@ -56,7 +56,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
-        if (loginRequest.getEmail() == null || loginRequest.getUniversityId() == null) {
+        if (loginRequest.getEmail() == null || loginRequest.getPassword() == null) {
             return ResponseEntity.badRequest().body("Email and password are required.");
         }
         
