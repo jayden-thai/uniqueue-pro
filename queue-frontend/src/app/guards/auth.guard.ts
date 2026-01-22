@@ -10,7 +10,7 @@ export const authGuard = () => {
         return true;
     } else {
         router.navigate(['/login']);
-        console.log("Not logged in!")
+        console.log("Not logged in!");
         return false;
     }
 }
