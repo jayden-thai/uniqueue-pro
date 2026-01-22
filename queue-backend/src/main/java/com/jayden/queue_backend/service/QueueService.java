@@ -47,7 +47,7 @@ public class QueueService {
         q.setTitle(title);
         q.setActive(true);
 
-        return queueMapper.toDto(q);
+        return queueMapper.toDto(queueRepository.save(q));
     }
 
     public QueueResponseDto getActiveQueueForOwner(Long ownerId) {
@@ -74,7 +74,7 @@ public class QueueService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        Queue queue = queueRepository.findById(userId)
+        Queue queue = queueRepository.findById(queueId)
                 .orElseThrow(() -> new QueueNotFoundException("Queue not found"));
         
         queueEntryRepository.findByQueueIdAndUserIdAndActiveTrue(queueId, userId).ifPresent(e -> {

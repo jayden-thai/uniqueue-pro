@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoQueueCreationPermissionException.class)
     public ResponseEntity<String> handleNoQueueCreationPermission(NoQueueCreationPermissionException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(IncompleteFormSubmissionException.class) 

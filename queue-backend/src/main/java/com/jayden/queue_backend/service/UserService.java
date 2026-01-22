@@ -74,7 +74,7 @@ public class UserService {
 
     // Logging in by checking credentials
     public UserResponseDto login(String email, String password) {
-        if (email == null || password == null) {
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
             throw new IncompleteFormSubmissionException("Email and password are required.");
         }
         
