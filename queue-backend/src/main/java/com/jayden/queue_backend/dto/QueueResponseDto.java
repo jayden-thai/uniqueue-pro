@@ -1,7 +1,6 @@
 package com.jayden.queue_backend.dto;
 
 import java.time.Instant;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,5 +12,4 @@ public class QueueResponseDto {
     private UserResponseDto owner;
     private String title;
     private Instant createdAt;
-    private List<QueueEntryResponseDto> entries;
 }
