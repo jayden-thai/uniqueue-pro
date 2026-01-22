@@ -33,8 +33,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    @ExceptionHandler(QueueNotFoundException.class) 
+    public ResponseEntity<String> handleQueueNotFound(QueueNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
     @ExceptionHandler(InvalidCredentialException.class) 
     public ResponseEntity<String> handleInvalidCredential(InvalidCredentialException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NoQueueCreationPermissionException.class)
+    public ResponseEntity<String> handleNoQueueCreationPermission(NoQueueCreationPermissionException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 

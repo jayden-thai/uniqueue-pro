@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class QueueEntryResponseDto {
     private Long id;
+    private Long queueId;
     private UserResponseDto user;
     private Instant joinedAt;
     private boolean active;

@@ -17,6 +17,7 @@ public class QueueEntryMapper {
     public QueueEntryResponseDto toDto(QueueEntry queueEntry) {
         return new QueueEntryResponseDto(
             queueEntry.getId(),
+            queueEntry.getQueue().getId(),
             userMapper.toDto(queueEntry.getUser()),
             queueEntry.getJoinedAt(),
             queueEntry.isActive()

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface QueueEntryRepository extends JpaRepository<QueueEntry, Long>{
 
-    List<QueueEntry> findByActiveTrueOrderByJoinedAtAsc();
+    List<QueueEntry> findByQueueIdAndActiveTrueOrderByJoinedAtAsc(Long queueId);
 
-    Optional<QueueEntry> findByUserIdAndActiveTrue(Long userId);
+    Optional<QueueEntry> findByQueueIdAndUserIdAndActiveTrue(Long queueId, Long userId);
 } 

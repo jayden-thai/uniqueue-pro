@@ -16,6 +16,10 @@ public class QueueEntry {
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "queue_id", nullable = false)
+    private Queue queue;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

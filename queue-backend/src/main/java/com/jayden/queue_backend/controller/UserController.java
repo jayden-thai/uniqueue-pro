@@ -1,8 +1,6 @@
 package com.jayden.queue_backend.controller;
 
 import com.jayden.queue_backend.dto.UserResponseDto;
-import com.jayden.queue_backend.exception.DuplicateEmailException;
-import com.jayden.queue_backend.exception.DuplicateUniversityIdException;
 import com.jayden.queue_backend.model.User;
 import com.jayden.queue_backend.service.UserService;
 
