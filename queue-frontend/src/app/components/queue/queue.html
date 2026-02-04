@@ -1,49 +1,35 @@
-<div class="queue-container">
-    <mat-card class="queue-card">
-        <mat-card-header>
-            <div mat-card-avatar>
-                <mat-icon class=header-icon>groups</mat-icon>
+<mat-card>
+ <mat-card-title>Queue</mat-card-title>
+ <mat-card-content>
+    <mat-list> 
+        @for (item of (entries$ | async); track item.id) {
+            <mat-list-item [class.is-me]="isMe(item)">
+                <mat-icon matListItemIcon>person</mat-icon>
+
+                <span matListItemTitle>
+                    {{ item.user.name }}
+                    @if (isMe(item)) { (You) }
+                </span>
+
+                <span matListItemLine>
+                    Joined: {{ item.joinedAt | date:'shortTime'}}
+                </span>
+            </mat-list-item>
+        } @empty {
+            <div class = "empty-state">
+                <mat-icon>hourglass_empty</mat-icon>
+                <p>The queue is currently empty</p>
             </div>
-            <mat-card-title>Current Queue</mat-card-title>
-            <mat-card-subtitle>
-                There are {{ (queueList$ | async)?.length || 0 }} people waiting.
-            </mat-card-subtitle>
-        </mat-card-header>
+        }
+    </mat-list>
+ </mat-card-content>
 
-        <mat-card-content>
-            <mat-list>
-                @for (item of (queueList$ | async); track item.id) {
-                    <mat-list-item [class.is-me]="item.user.id === authService.getCurrentUser()?.id">
-
-                        <mat-icon matListItemIcon>person</mat-icon>
-
-                        <span matListItemTitle>
-                            {{ item.user.name }}
-                            @if (item.user.id === authService.getCurrentUser()?.id) { (You) }
-                        </span>
-
-                        <span matListItemLine>
-                            Joined: {{ item.joinedAt | date:'shortTime' }}
-                        </span>
-                    </mat-list-item>
-
-                } @empty {
-                    <div class="empty-state">
-                        <mat-icon>hourglass_empty</mat-icon>
-                        <p>The queue is currently empty.</p>
-                    </div>
-                }
-            </mat-list>
-        </mat-card-content>
-
-        <mat-card-actions align="end">
-            <button 
-            mat-flat-button 
-            color="primary"
-            (click)="joinQueue()"
-            [disabled]="false">
-                Join Queue
-            </button>
-        </mat-card-actions>
-    </mat-card>
-</div>
+ <mat-card-actions align="end">
+    <button mat-flat-button color="primary" (click)="joinQueue()" [disabled]="isInQueue$ | async">
+        Join
+    </button>
+    <button mat-flat-button (click)="leaveQueue()" [disabled]="!(isInQueue$ | async)">
+        Leave
+    </button>
+ </mat-card-actions>
+</mat-card>

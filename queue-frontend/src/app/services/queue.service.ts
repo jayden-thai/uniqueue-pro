@@ -14,9 +14,18 @@ export interface QueueEntry {
     universityId: string;
     email: string;
     department?: string;
-    role: 'STUDENT' | 'FACULTY';
   }
   
+}
+
+export interface QueueSummary {
+  id: number;
+  title: string;
+  createdAt: string;
+  owner: {
+    id: number;
+    name: string;
+  }
 }
 
 @Injectable({
@@ -24,24 +33,40 @@ export interface QueueEntry {
 })
 export class QueueService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl;
   private auth = inject(AuthService);
+  private apiUrl = environment.apiUrl;
 
-  getQueue(): Observable<QueueEntry[]>{
-    return this.http.get<QueueEntry[]>(`${this.apiUrl}/queue`);
+  getQueuesForOwner(ownerId: number): Observable<QueueSummary[]> {
+    return this.http.get<QueueSummary[]>(`${this.apiUrl}/queues/owner/${ownerId}`);
   }
 
-  joinQueue(): Observable<QueueEntry> {
+  getQueueEntries(queueId: number): Observable<QueueEntry[]>{
+    return this.http.get<QueueEntry[]>(`${this.apiUrl}/queues/${queueId}/entries`);
+  }
+
+  createQueue(ownerId: number, title: string): Observable<QueueSummary> {
+    return this.http.post<QueueSummary>(`${this.apiUrl}/queues?ownerId=${ownerId}&title=${encodeURIComponent(title)}`, {});
+  }
+
+  joinQueueAsUser(queueId: number, userId: number): Observable<QueueEntry> {
+    return this.http.post<QueueEntry>(`${this.apiUrl}/queues/${queueId}/join/${userId}`, {});
+  }
+
+  leaveQueueAsUser(queueId: number, userId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/queues/${queueId}/leave/${userId}`, {});
+  }
+
+  joinCurrentUser(queueId: number): Observable<QueueEntry> {
     const user = this.auth.getCurrentUser();
     if (!user?.id) throw new Error('No logged-in user (missing id)'); 
     
-    return this.http.post<QueueEntry>(`${this.apiUrl}/queue/join/${user.id}`, {});
+    return this.joinQueueAsUser(queueId, user.id!);
   }
 
-  leaveQueue(): Observable<void> {
+  leaveCurrentUser(queueId: number): Observable<void> {
     const user = this.auth.getCurrentUser();
     if (!user?.id) throw new Error('No logged-in user (missing id).');
 
-    return this.http.post<void>(`${this.apiUrl}/queue/leave/${user.id}`, {});
+    return this.leaveQueueAsUser(queueId, user.id!);
   }
 }
