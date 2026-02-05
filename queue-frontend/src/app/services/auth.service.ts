@@ -7,7 +7,7 @@ export interface User {
   id?: number;
   email: string;
   password?: string;
-  role: 'STUDENT' | 'FACULTY';
+  role: 'STUDENT' | 'FACULTY' | undefined;
   universityId: string;
   name: string;
   department?: string;

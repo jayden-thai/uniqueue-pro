@@ -34,11 +34,16 @@ export class Register {
     password: '',
     name: '',
     universityId: '',
-    role: 'STUDENT',
+    role: undefined as 'STUDENT' | 'FACULTY' | undefined,
     department: '',
   }
-
+  selectedRole?: 'STUDENT' | 'FACULTY';
   errorMessage = '';
+
+  pickRole(role: 'STUDENT' | 'FACULTY') {
+    this.selectedRole = role;
+    this.user.role = role;
+  }
 
   onRegister() {
     this.authService.register(this.user).subscribe({
