@@ -8,7 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop # Automatically creates tables
+      ddl-auto: update # update/create-drop
     show-sql: true # Shows the SQL commands in the terminal (great for debugging)
     properties:
       hibernate:
