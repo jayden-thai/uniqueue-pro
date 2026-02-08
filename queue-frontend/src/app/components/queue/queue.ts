@@ -11,6 +11,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 
 
 @Component({
+  standalone: true,
   selector: 'app-queue',
   imports: [
     CommonModule,
