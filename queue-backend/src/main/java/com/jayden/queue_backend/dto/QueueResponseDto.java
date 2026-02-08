@@ -12,4 +12,5 @@ public class QueueResponseDto {
     private UserResponseDto owner;
     private String title;
     private Instant createdAt;
+    private boolean active;
 }

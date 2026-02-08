@@ -20,7 +20,8 @@ public class QueueMapper {
             queue.getId(),
             userMapper.toDto(queue.getOwner()),
             queue.getTitle(),
-            queue.getCreatedAt()
+            queue.getCreatedAt(),
+            queue.isActive()
         );
     }
 }
