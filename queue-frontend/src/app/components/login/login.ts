@@ -38,7 +38,11 @@ export class Login {
     this.authService.login(this.email, this.password).subscribe({
       next: (user) => {
         console.log("Logged in as: ", user);
-        this.router.navigate(['/queue']);
+        if (user.role === 'FACULTY') {
+          this.router.navigate(['/faculty']);
+        } else {
+          this.router.navigate(['/professors']);
+        }
       },
       error: (err) => {
         this.errorMessage = "Invalid credentials";
