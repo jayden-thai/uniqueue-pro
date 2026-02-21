@@ -1,17 +1,11 @@
 package com.jayden.queue_backend.dto;
 
-import lombok.Data;
-
 import java.time.Instant;
 
-import lombok.AllArgsConstructor;
-
-@Data
-@AllArgsConstructor
-public class QueueEntryResponseDto {
-    private Long id;
-    private Long queueId;
-    private UserResponseDto user;
-    private Instant joinedAt;
-    private boolean active;
-}
+public record QueueEntryResponseDto (
+    Long id,
+    Long queueId,
+    UserResponseDto user,
+    Instant joinedAt,
+    boolean active
+) {}
