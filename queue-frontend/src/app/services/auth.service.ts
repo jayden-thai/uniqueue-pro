@@ -13,6 +13,11 @@ export interface User {
   department?: string;
 }
 
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,8 +28,8 @@ export class AuthService {
 
   currentUser$ = this.currentUserSubject.asObservable();
 
-  login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/users/login`, { email, password }).pipe(
+  login(loginReq: LoginRequest): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/users/login`, loginReq).pipe(
       tap(user => {
         this.currentUserSubject.next(user);
       })

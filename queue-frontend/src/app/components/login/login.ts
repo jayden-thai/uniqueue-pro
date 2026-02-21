@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms'; 
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, LoginRequest } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -35,7 +35,8 @@ export class Login {
 
   // Runs when user clicks "Login"
   onLogin() {
-    this.authService.login(this.email, this.password).subscribe({
+    const loginReq: LoginRequest = { email: this.email, password: this.password };
+    this.authService.login(loginReq).subscribe({
       next: (user) => {
         console.log("Logged in as: ", user);
         if (user.role === 'FACULTY') {
