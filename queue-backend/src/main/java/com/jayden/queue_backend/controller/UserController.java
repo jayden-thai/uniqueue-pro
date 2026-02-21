@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -32,6 +35,12 @@ public class UserController {
     public List<UserResponseDto> getAllUsers() {
         return userService.getAllUsers();
     }
+
+    @GetMapping("/faculty")
+    public List<UserResponseDto> getFaculty(@RequestParam(required = false) String search) {
+        return userService.getFaculty(search);
+    }
+    
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {

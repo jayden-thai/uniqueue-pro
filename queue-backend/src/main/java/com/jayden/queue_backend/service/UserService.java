@@ -6,6 +6,7 @@ import com.jayden.queue_backend.exception.DuplicateUniversityIdException;
 import com.jayden.queue_backend.exception.IncompleteFormSubmissionException;
 import com.jayden.queue_backend.exception.InvalidCredentialException;
 import com.jayden.queue_backend.exception.UserNotFoundException;
+import com.jayden.queue_backend.model.Role;
 import com.jayden.queue_backend.model.User;
 import com.jayden.queue_backend.repository.UserRepository;
 import com.jayden.queue_backend.mapper.UserMapper;
@@ -44,6 +45,17 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         return userMapper.toDto(user);
+    }
+
+    public List<UserResponseDto> getFaculty(String search) {
+        
+        String s = (search == null) ? null : search.trim();
+
+        return userRepository
+            .searchFaculty(Role.FACULTY, s)
+            .stream()
+            .map(userMapper::toDto)
+            .toList();
     }
 
     // Registering a new account
