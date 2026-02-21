@@ -1,5 +1,6 @@
 package com.jayden.queue_backend.controller;
 
+import com.jayden.queue_backend.dto.LoginRequestDto;
 import com.jayden.queue_backend.dto.UserResponseDto;
 import com.jayden.queue_backend.model.User;
 import com.jayden.queue_backend.service.UserService;
@@ -55,9 +56,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
         return ResponseEntity.ok(
-            userService.login(loginRequest.getEmail(), loginRequest.getPassword())
+            userService.login(loginRequest.email(), loginRequest.password())
         );
     }
     
