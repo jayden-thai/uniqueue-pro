@@ -1,0 +1,67 @@
+<mat-card>
+    <mat-card-title>Search Available Queues</mat-card-title>
+
+    <mat-card-content>
+        <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Search by name or department</mat-label>
+            <input matInput [(ngModel)]="searchTerm" placeholder="e.g. Smith or CS" />
+        </mat-form-field>
+
+    <button mat-flat-button color="primary" type="button" (click)="onSearch()">
+        Search
+    </button>
+    </mat-card-content>
+</mat-card>
+
+<mat-card style="margin-top: 16px;">
+    <mat-card-title>Providers</mat-card-title>
+
+    <mat-card-content>
+        <mat-list>
+            @for (p of (providers$ | async); track p.id) {
+                <mat-list-item>
+                    <span matListItemTitle>{{ p.name }}</span>
+                    <span matListItemLine>{{ p.department || '-' }}</span>
+
+                    <button mat-button matListItemMeta type="button" (click)="toggleQueues(p)">
+                        {{ expandedProviderId === p.id ? 'Hide queues' : 'View queues'}}
+                    </button>
+                </mat-list-item>
+
+                @if (expandedProviderId === p.id) {
+                    <div style="margin-left: 56px; margin-bottom: 12px;">
+                        @if (loadingQueuesFor === p.id) {
+                            <p>Loading queues...</p>
+                        }
+                        @else if (queueLoadErrorByProviderId[p.id!]) {
+                            <p class="error">{{ queueLoadErrorByProviderId[p.id!] }}</p>
+                        }
+                        @else {
+                            @if (getQueues(p.id!).length === 0) {
+                                <p>No queues for this provider yet.</p>
+                            }
+                            @else {
+                                <ul>
+                                    @for (q of getQueues(p.id!); track q.id) {
+                                        <li>
+                                            <mat-icon style="vertical-align: middle;">
+                                                {{ q.active ? 'visibility' : 'visibility_off' }}
+                                            </mat-icon>
+                                            <span style="margin-left: 6px;">
+                                                {{ q.title }} - {{ q.active ? 'Active' : 'Inactive' }}
+                                            </span>
+
+                                            <a style="margin-left: 12px;" [routerLink]="['/queues', q.id]">Open</a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        }
+                    </div>
+                }
+            } @empty {
+                <p>No providers found</p>
+            }
+        </mat-list>
+    </mat-card-content>
+</mat-card>

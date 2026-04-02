@@ -42,7 +42,7 @@ export class Login {
         if (user.role === 'FACULTY') {
           this.router.navigate(['/faculty']);
         } else {
-          this.router.navigate(['/professors']);
+          this.router.navigate(['/providers']);
         }
       },
       error: (err) => {

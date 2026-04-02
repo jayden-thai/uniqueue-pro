@@ -25,9 +25,9 @@ export const routes: Routes = [
         loadComponent: () => import('./components/faculty-dashboard/faculty-dashboard').then(m => m.FacultyDashboard),
         canActivate: [authGuard]
     },
-    { // stub
-        path: 'professors',
-        loadComponent: () => import('./components/register/register').then(m => m.Register),
+    { 
+        path: 'providers',
+        loadComponent: () => import('./components/provider-directory/provider-directory').then(m => m.ProviderDirectory),
         canActivate: [authGuard]
     }
 ];
